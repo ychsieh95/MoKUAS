@@ -1,0 +1,188 @@
+﻿@page "{CommentGuid}"
+@model MoKUAS.Pages.Courses.Edit.ContentModel
+@{
+    Layout = "_LayoutStudents";
+    ViewData["Title"] = "修改評論";
+}
+
+@section styles {
+    <!-- bootstrap sidebar -->
+    <link rel="stylesheet" href="~/lib/bootstrap-slider/css/bootstrap-slider.min.css" type="text/css" />
+    <!-- star rating -->
+    <link rel="stylesheet" href="~/lib/star-rating/css/star-rating.css" type="text/css" />
+}
+
+@section scripts {
+    <!-- bootstrap sidebar -->
+    <script src="~/lib/bootstrap-slider/bootstrap-slider.min.js" type="text/javascript"></script>
+    <!-- roll call frequency -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("input[name='Comment.RollCallFrequency']").slider().slider('setValue', @Model.Comment.RollCallFrequency);
+        });
+    </script>
+    <!-- star rating -->
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("input[type='radio'][name='stars']").change(function () {
+                var grade = $("input[name='stars']:checked").attr('id').split('-')[1];
+                $("input[name='Comment.Grade']").val(grade);
+            });
+        });
+        $("input[name='stars'][id='star-@Model.Comment.Grade']").prop("checked", true);
+    </script>
+    <!-- click switch -->
+    <script src="~/lib/bootstrap-click-switch/js/bootstrap-click-switch.js" type="text/javascript"></script>
+}
+
+<div class="container">
+    <div asp-validation-summary="All" class="my-3"></div>
+    <form asp-action="/Courses/Add/Content" method="post">
+        <h1>評論內容</h1>
+        <hr />
+        <h4>課程資訊</h4>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label text-sm-right">課程名稱</label>
+            <div class="col-sm-10">
+                <input asp-for="Comment.SubjectChineseName" type="text" class="form-control" readonly />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label text-sm-right">授課教師</label>
+            <div class="col-sm-10">
+                <input asp-for="Comment.Teachers" type="text" class="form-control" readonly />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label text-sm-right">班級簡稱</label>
+            <div class="col-sm-10">
+                <input asp-for="Comment.ClassShortName" type="text" class="form-control" readonly />
+            </div>
+            <input asp-for="Comment.ClassGuid" type="hidden" readonly />
+        </div>
+        <div class="col-12 col-sm-12 my-3"></div>
+        <h4>教學方式</h4>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label text-sm-right">教學方式</label>
+            <div class="col-sm-10 text-center text-sm-left" data-toggle="buttons">
+                <span class="button-checkbox">
+                    <button type="button" class="btn" style="margin-bottom: 5px;" data-color="primary">黑板</button>
+                    <input asp-for="Comment.IsBlackboard" type="checkbox" value="true" class="d-none" />
+                </span>
+                <span class="button-checkbox">
+                    <button type="button" class="btn" style="margin-bottom: 5px;" data-color="primary">課本</button>
+                    <input asp-for="Comment.IsBook" type="checkbox" value="true" class="d-none" />
+                </span>
+                <span class="button-checkbox">
+                    <button type="button" class="btn" style="margin-bottom: 5px;" data-color="primary">PPT</button>
+                    <input asp-for="Comment.IsPPT" type="checkbox" value="true" class="d-none" />
+                </span>
+                <span class="button-checkbox">
+                    <button type="button" class="btn" style="margin-bottom: 5px;" data-color="primary">廣播</button>
+                    <input asp-for="Comment.IsBroadcast" type="checkbox" value="true" class="d-none" />
+                </span>
+                <span class="button-checkbox">
+                    <button type="button" class="btn" style="margin-bottom: 5px;" data-color="primary">實作</button>
+                    <input asp-for="Comment.IsBuild" type="checkbox" value="true" class="d-none" />
+                </span>
+                <span class="button-checkbox">
+                    <button type="button" class="btn" style="margin-bottom: 5px;" data-color="primary">互動</button>
+                    <input asp-for="Comment.IsInteractive" type="checkbox" value="true" class="d-none" />
+                </span>
+            </div>
+        </div>
+        <div class="col-12 col-sm-12 my-3"></div>
+        <h4>點名</h4>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label text-sm-right">點名頻率</label>
+            <div class="col-sm-10 text-center text-sm-left">
+                <input asp-for="Comment.RollCallFrequency" type="text"
+                       data-provide="slider"
+                       data-slider-ticks="[0, 1, 2, 3, 4]"
+                       data-slider-ticks-labels='["無", "低", "中", "高", "每堂"]'
+                       data-slider-min="1"
+                       data-slider-max="4"
+                       data-slider-step="1"
+                       data-slider-value="2"
+                       data-slider-tooltip="hide" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label text-sm-right">點名方式</label>
+            <div class="col-sm-10 text-center text-sm-left" data-toggle="buttons">
+                <span class="button-checkbox">
+                    <button type="button" class="btn" style="margin-bottom: 5px;" data-color="primary">親自點名</button>
+                    <input asp-for="Comment.ByInPerson" type="checkbox" value="true" class="d-none" />
+                </span>
+                <span class="button-checkbox">
+                    <button type="button" class="btn" style="margin-bottom: 5px;" data-color="primary">簽到點名</button>
+                    <input asp-for="Comment.BySignInSheet" type="checkbox" value="true" class="d-none" />
+                </span>
+                <span class="button-checkbox">
+                    <button type="button" class="btn" style="margin-bottom: 5px;" data-color="primary">線上點名</button>
+                    <input asp-for="Comment.ByOnline" type="checkbox" value="true" class="d-none" />
+                </span>
+                <span class="button-checkbox">
+                    <button type="button" class="btn" style="margin-bottom: 5px;" data-color="primary">作業點名</button>
+                    <input asp-for="Comment.ByClasswork" type="checkbox" value="true" class="d-none" />
+                </span>
+                <span class="button-checkbox">
+                    <button type="button" class="btn" style="margin-bottom: 5px;" data-color="primary">測驗點名</button>
+                    <input asp-for="Comment.ByTest" type="checkbox" value="true" class="d-none" />
+                </span>
+            </div>
+        </div>
+        <div class="col-12 col-sm-12 my-3"></div>
+        <h4>作業與考試</h4>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label text-sm-right">作業與考試</label>
+            <div class="col-sm-10 text-center text-sm-left" data-toggle="buttons">
+                <span class="button-checkbox">
+                    <button type="button" class="btn" style="margin-bottom: 5px;" data-color="primary">平時作業</button>
+                    <input asp-for="Comment.HaveClasswork" type="checkbox" value="true" class="d-none" />
+                </span>
+                <span class="button-checkbox">
+                    <button type="button" class="btn" style="margin-bottom: 5px;" data-color="primary">平時測驗</button>
+                    <input asp-for="Comment.HaveTest" type="checkbox" value="true" class="d-none" />
+                </span>
+                <span class="button-checkbox">
+                    <button type="button" class="btn" style="margin-bottom: 5px;" data-color="primary">期中考試</button>
+                    <input asp-for="Comment.HaveMidtermExam" type="checkbox" value="true" class="d-none" />
+                </span>
+                <span class="button-checkbox">
+                    <button type="button" class="btn" style="margin-bottom: 5px;" data-color="primary">期末考試</button>
+                    <input asp-for="Comment.HaveFinalExam" type="checkbox" value="true" class="d-none" />
+                </span>
+            </div>
+        </div>
+        <div class="col-12 col-sm-12 my-3"></div>
+        <h4>作業與考試</h4>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label text-sm-right">評論或備註 (100 字內)</label>
+            <div class="col-sm-10 text-center text-sm-left">
+                <textarea asp-for="Comment.Remark" class="form-control" rows="4" maxlength="100" cols="100"></textarea>
+            </div>
+        </div>
+        <div class="col-12 col-sm-12 my-3"></div>
+        <h4>總評價</h4>
+        <div class="cont">
+            <div class="stars">
+                <input asp-for="Comment.Grade" type="hidden" />
+                <!-- stars -->
+                <input type="radio" class="star star-5" name="stars" id="star-5" />
+                <label class="star star-5" for="star-5"></label>
+                <input type="radio" class="star star-4" name="stars" id="star-4" />
+                <label class="star star-4" for="star-4"></label>
+                <input type="radio" class="star star-3" name="stars" id="star-3" />
+                <label class="star star-3" for="star-3"></label>
+                <input type="radio" class="star star-2" name="stars" id="star-2" />
+                <label class="star star-2" for="star-2"></label>
+                <input type="radio" class="star star-1" name="stars" id="star-1" />
+                <label class="star star-1" for="star-1"></label>
+            </div>
+        </div>
+        <div class="form-group row">
+            <input type="submit" class="btn btn-primary btn-block" value="送出" />
+        </div>
+    </form>
+</div>

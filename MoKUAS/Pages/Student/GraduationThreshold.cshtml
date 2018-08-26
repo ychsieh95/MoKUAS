@@ -1,0 +1,64 @@
+﻿@page
+@model GraduationThresholdModel
+@{
+    Layout = "_LayoutStudents";
+    ViewData["Title"] = "畢業門檻查調";
+}
+
+<div class="container">
+    <div asp-validation-summary="All" class="my-3"></div>
+    <div class="row">
+        <div class="col-12 col-sm-4">
+            <div class="card border-success">
+                <h5 class="card-header bg-success text-white">學生基本資訊</h5>
+                <div class="card-body">
+                    <p>班級：@Model.GraduationThreshold.StdBasicInfo.ClassName</p>
+                    <p>學號：@Model.GraduationThreshold.StdBasicInfo.StdId</p>
+                    <p>姓名：@Model.GraduationThreshold.StdBasicInfo.StdName</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-4 mt-3 mt-sm-0">
+            <div class="card border-@(Model.IsEngEngGradPass ? "success" : "danger")">
+                <h5 class="card-header bg-@(Model.IsEngEngGradPass ? "success" : "danger") text-white">英語畢業門檻通過狀態</h5>
+                <div class="card-body">@Model.GraduationThreshold.EngEngGradPass</div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-4 mt-3 mt-sm-0">
+            <div class="card border-@(Model.IsEngTrainSta ? "success" : "danger")">
+                <h5 class="card-header bg-@(Model.IsEngTrainSta ? "success" : "danger") text-white">英語能力訓練課程修習狀態</h5>
+                <div class="card-body">@Model.GraduationThreshold.EngTrainSta</div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-12 mt-3">
+            <div class="card border-@(Model.IsOcpClassList ? "success" : "danger")">
+                <h5 class="card-header bg-@(Model.IsOcpClassList ? "success" : "danger") text-white">校外實習課程通過列表</h5>
+                <div class="card-body p-0">
+                    <table class="table table-striped">
+                        <thead class="w-100">
+                            <tr class="text-center">
+                                <th class="align-middle">學年</th>
+                                <th class="align-middle">學期</th>
+                                <th class="align-middle">選課代碼</th>
+                                <th class="align-middle">課程名稱</th>
+                                <th class="align-middle">分數</th>
+                            </tr>
+                        </thead>
+                        <tbody class="w-100">
+                            @foreach (var ocpClass in Model.GraduationThreshold.OcpClassList)
+                            {
+                                <tr class="text-center">
+                                    <td class="align-middle">@ocpClass.SysYear</td>
+                                    <td class="align-middle">@ocpClass.SysSemester</td>
+                                    <td class="align-middle">@ocpClass.CourseId</td>
+                                    <td class="align-middle">@ocpClass.SubjectChineseName</td>
+                                    <td class="align-middle">@ocpClass.Score</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

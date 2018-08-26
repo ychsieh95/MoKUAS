@@ -1,0 +1,101 @@
+﻿@page "{Pages?}/{OrderBy?}"
+@model MoKUAS.Pages.Courses.IndexPageModel
+@{
+    Layout = "_LayoutStudents";
+    ViewBag.Title = "評價排行";
+}
+
+@section styles {
+    <!-- star rating -->
+    <link rel="stylesheet" href="~/lib/bootstrap-star-rating/css/star-rating.min.css" type="text/css" media="all" />
+}
+
+@section scripts {
+    <!-- star rating -->
+    <script src="~/lib/bootstrap-star-rating/js/star-rating.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.rating-loading').rating('refresh',
+                {
+                    max: 5,
+                    min: 1,
+                    step: 0.1,
+                    size: 'xs',
+                    disabled: true,
+                    showClear: false,
+                    starCaptions: function (val) {
+                        return val.toFixed(1);
+                    },
+                    starCaptionClasses: function (val) {
+                        var captionClasses = '';
+                        switch (true) {
+                            case (val <= 2): captionClasses = 'label label-danger badge-danger'; break;
+                            case (val <= 3): captionClasses = 'label label-warning badge-warning'; break;
+                            case (val <= 4): captionClasses = 'label label-primary badge-primary'; break;
+                            case (val <= 5): captionClasses = 'label label-success badge-success'; break;
+                        }
+                        return captionClasses;
+                    }
+                });
+        });
+    </script>
+    <!-- jQuery Cookies -->
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js" type="text/javascript"></script>
+    <!-- News -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var news = Cookies.get('.News');
+            if (typeof news === 'undefined') {
+                $('#news-modal').modal('show');
+            }
+            else if (news === 'false') {
+                $('#news-modal').modal('show');
+                Cookies.set('.News', 'true');
+            }
+        });
+    </script>
+}
+
+<div class="container">
+    <div asp-validation-summary="All" class="my-3"></div>
+    <div class="text-center my-3">
+        <h1><strong>評價排行</strong></h1>
+    </div>
+    <div class="row">
+        @foreach (var comment in Model.Comments)
+        {
+            <div class="col-12 col-sm-6 col-md-4 mb-3">
+                <div class="card @(comment.Grade > 3 ? "border-info" : comment.Grade > 1 ? "border-warning" : "border-danger")">
+                    <h5 class="card-header">
+                        @comment.SubjectChineseName - @comment.Teachers
+                        <a asp-page="/Courses/Overview"
+                           asp-route-SubjectChineseName="@comment.SubjectChineseName"
+                           asp-route-Teachers="@comment.Teachers"
+                           asp-route-ClassShortName="@comment.ClassShortName"
+                           asp-route-ByKeyword="false">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                    </h5>
+                    <div class="card-body" style="vertical-align: middle;">
+                        <input value="@comment.Grade.ToString("f1")" class="rating-loading" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <nav class="col-12 col-sm-12 col-md-12">
+        <!-- [First] | [Before] | [<Page>] | [Next] | [Last] -->
+        <nav aria-label="...">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @(Model.Pages <= 1 ? "disabled" : "")">
+                    <a asp-page="/Courses/Index" asp-route-Pages="@(Model.Pages - 1)" asp-route-OrderBy="@Model.OrderBy"
+                       class="page-link"><span aria-hidden="true">&larr;</span></a>
+                </li>
+                <li class="page-item @(Model.Pages >= Model.LastPage ? "disabled" : "")">
+                    <a asp-page="/Courses/Index" asp-route-Pages="@(Model.Pages + 1)" asp-route-OrderBy="@Model.OrderBy"
+                       class="page-link"><span aria-hidden="true">&rarr;</span></a>
+                </li>
+            </ul>
+        </nav>
+    </nav>
+</div>

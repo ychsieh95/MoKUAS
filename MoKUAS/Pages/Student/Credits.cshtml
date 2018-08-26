@@ -1,0 +1,158 @@
+﻿@page
+@model CreditsModel
+@{
+    Layout = "_LayoutStudents";
+    ViewData["Title"] = "學分試算";
+}
+
+@section styles {
+    <style type="text/css">
+        @@media screen and (max-width: 576px) {
+            .hidden-sm {
+                display: none;
+            }
+        }
+    </style>
+}
+
+@section scripts {
+    <script type="text/javascript">
+        $("a[name='card-pill']").on('click', function () {
+            $("a[data-target]").removeClass('active');
+            $(this).addClass('active');
+
+            $(".credits-div").addClass('d-none');
+            $("div[id='" + $(this).attr('data-target') + "']").removeClass('d-none');
+        });
+    </script>
+}
+
+<div class="container">
+    <div class="card my-3">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs text-center">
+                <li class="nav-item">
+                    <a class="nav-link active" name="card-pill" href="#" data-target="get-credits">已取得所有學分 <span class="badge badge-light">@Model.GetCredits</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" name="card-pill" href="#" data-target="miss-credits">已失去必修學分 <span class="badge badge-light">@Model.MissRequiredCredits</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" name="card-pill" href="#" data-target="general-education">已取得通識數量 <span class="badge badge-light">@(Model.Credits.GeneralEducation["Core"].Count + Model.Credits.GeneralEducation["Extend"].Count)</span></a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body p-0 my-3">
+            <div class="credits-div" id="get-credits">
+                <h5 class="card-title hidden-sm">已取得所有學分：@Model.GetCredits（@Model.GetRequiredCredits + @Model.GetNotRequiredCredits）</h5>
+                <h5 class="card-title d-sm-none">已取得所有學分：@Model.GetCredits<br />（@Model.GetRequiredCredits + @Model.GetNotRequiredCredits）</h5>
+                <table class="table table-striped">
+                    <thead class="w-100">
+                        <tr class="text-center">
+                            <th class="align-middle">#</th>
+                            <th class="align-middle" style="text-align: left;">科目名稱</th>
+                            <th class="align-middle">學分數</th>
+                            <th class="align-middle hidden-sm">必選修</th>
+                            <th class="align-middle hidden-sm">開課別</th>
+                            <th class="align-middle hidden-sm">期中成績</th>
+                            <th class="align-middle">學期成績</th>
+                            <th class="align-middle hidden-sm">備註</th>
+                        </tr>
+                    </thead>
+                    <tbody class="w-100">
+                        @{
+                            int index = 1;
+                            foreach (var score in Model.Credits.Subject["Get"])
+                            {
+                                <tr class="text-center">
+                                    <td class="align-middle">@(index++)</td>
+                                    <td class="align-middle" style="text-align: left;">@score.SubjectChineseName</td>
+                                    <td class="align-middle">@score.PropertiesCredit</td>
+                                    <td class="align-middle hidden-sm">@score.PropertiesRequiredOrElective</td>
+                                    <td class="align-middle hidden-sm">@score.ClassType</td>
+                                    <td class="align-middle hidden-sm">@score.MidtermScore</td>
+                                    <td class="align-middle">@score.SemesterScore</td>
+                                    <td class="align-middle hidden-sm">@score.Remark</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="credits-div d-none" id="miss-credits">
+                <h5 class="card-title">已失去必修學分：@Model.MissRequiredCredits</h5>
+                <table class="table table-striped">
+                    <thead class="w-100">
+                        <tr class="text-center">
+                            <th class="align-middle">#</th>
+                            <th class="align-middle" style="text-align: left;">科目名稱</th>
+                            <th class="align-middle">學分數</th>
+                            <th class="align-middle hidden-sm">必選修</th>
+                            <th class="align-middle hidden-sm">開課別</th>
+                            <th class="align-middle hidden-sm">期中成績</th>
+                            <th class="align-middle">學期成績</th>
+                            <th class="align-middle hidden-sm">備註</th>
+                        </tr>
+                    </thead>
+                    <tbody class="w-100">
+                        @{
+                            index = 1;
+                            foreach (var score in Model.Credits.Subject["Miss"])
+                            {
+                                <tr class="text-center">
+                                    <td class="align-middle">@(index++)</td>
+                                    <td class="align-middle" style="text-align: left;">@score.SubjectChineseName</td>
+                                    <td class="align-middle">@score.PropertiesCredit</td>
+                                    <td class="align-middle hidden-sm">@score.PropertiesRequiredOrElective</td>
+                                    <td class="align-middle hidden-sm">@score.ClassType</td>
+                                    <td class="align-middle hidden-sm">@score.MidtermScore</td>
+                                    <td class="align-middle">@score.SemesterScore</td>
+                                    <td class="align-middle hidden-sm">@score.Remark</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="credits-div d-none" id="general-education">
+                <h5 class="card-title">已取得通識數量：@(Model.Credits.GeneralEducation["Core"].Count + Model.Credits.GeneralEducation["Extend"].Count)/8</h5>
+                <table class="table table-striped">
+                    <thead class="w-100">
+                        <tr class="text-center">
+                            <th class="align-middle">#</th>
+                            <th class="align-middle" style="text-align: left;">科目名稱</th>
+                            <th class="align-middle">學分數</th>
+                            <th class="align-middle hidden-sm">必選修</th>
+                            <th class="align-middle hidden-sm">開課別</th>
+                            <th class="align-middle hidden-sm">期中成績</th>
+                            <th class="align-middle">學期成績</th>
+                            <th class="align-middle hidden-sm">備註</th>
+                        </tr>
+                    </thead>
+                    <tbody class="w-100">
+                        @{
+                            index = 1;
+                            foreach (string key in Model.Credits.GeneralEducation.Keys.ToArray())
+                            {
+
+                                foreach (var score in Model.Credits.GeneralEducation[key])
+                                {
+                                    <tr class="text-center">
+                                        <td class="align-middle">@(index++)</td>
+                                        <td class="align-middle" style="text-align: left;">@score.SubjectChineseName</td>
+                                        <td class="align-middle">@score.PropertiesCredit</td>
+                                        <td class="align-middle hidden-sm">@score.PropertiesRequiredOrElective</td>
+                                        <td class="align-middle hidden-sm">@score.ClassType</td>
+                                        <td class="align-middle hidden-sm">@score.MidtermScore</td>
+                                        <td class="align-middle">@score.SemesterScore</td>
+                                        <td class="align-middle hidden-sm">@score.Remark</td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

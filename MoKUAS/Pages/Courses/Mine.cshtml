@@ -1,0 +1,118 @@
+﻿@page
+@model MineModel
+@{
+    Layout = "_LayoutStudents";
+    ViewData["Title"] = "我的評論";
+}
+
+@section styles {
+    <!-- table[class info] -->
+    <style type="text/css">
+        @@media only screen and (min-width: 576px) {
+            .td-col-sm-1 { width: 10%; }
+            .td-col-sm-2 { width: 20%; }
+            .td-col-sm-3 { width: 30%; }
+            .td-col-sm-4 { width: 40%; }
+            .td-col-sm-5 { width: 50%; }
+            .td-col-sm-6 { width: 60%; }
+            .td-col-sm-7 { width: 70%; }
+            .td-col-sm-8 { width: 80%; }
+            .td-col-sm-9 { width: 90%; }
+            .td-col-sm-10 { width: 100%; }
+        }
+        @@media only screen and (max-width: 575px) {
+            .td-col-1 { width: 10%; }
+            .td-col-2 { width: 20%; }
+            .td-col-3 { width: 30%; }
+            .td-col-4 { width: 40%; }
+            .td-col-5 { width: 50%; }
+            .td-col-6 { width: 60%; }
+            .td-col-7 { width: 70%; }
+            .td-col-8 { width: 80%; }
+            .td-col-9 { width: 90%; }
+            .td-col-10 { width: 100%; }
+        }
+    </style>
+}
+
+<div class="container">
+    <div asp-validation-summary="All" class="my-3"></div>
+    <div class="d-none d-sm-block">
+        <table class="table my-3">
+            <thead class="w-100">
+                <tr class="table-info text-center">
+                    <th class="align-middle">#</th>
+                    <th class="text-left align-middle">課程名稱</th>
+                    <th class="text-left align-middle">授課教師</th>
+                    <th class="text-left align-middle">班級簡稱</th>
+                    <th class="align-middle">評價</th>
+                    <th class="align-middle">評論時間</th>
+                    <th class="align-middle"></th>
+                </tr>
+            </thead>
+            <tbody class="w-100">
+                @{
+                    int counter = 1;
+                    foreach (var comment in Model.Comments)
+                    {
+                        <tr class="text-center">
+                            <td class="align-middle">@(counter++)</td>
+                            <td class="text-left align-middle">@comment.SubjectChineseName</td>
+                            <td class="text-left align-middle">@comment.Teachers</td>
+                            <td class="text-left align-middle">@comment.ClassShortName</td>
+                            <td class="align-middle">@comment.Grade.ToString("f2")</td>
+                            <td class="align-middle">@comment.RecordTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                            <td class="text-right align-middle">
+                                <span class="btn-group">
+                                    <a asp-page="/Courses/Delete/Content" asp-route-CommentGuid="@comment.Guid" class="btn btn-danger" onclick="return confirm('確定要刪除此筆評論？');">刪除</a>
+                                    <a asp-page="/Courses/Edit/Content" asp-route-CommentGuid="@comment.Guid" class="btn btn-warning">修改</a>
+                                    <a asp-page="/Courses/Details" asp-route-CommentGuid="@comment.Guid" class="btn btn-primary">檢視</a>
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                    counter = 1;
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="d-sm-none">
+        @{
+            foreach (var comment in Model.Comments)
+            {
+                <div class="card mt-3">
+                    <h5 class="card-header" style="background-color: #bee5eb;">#@(counter++) - @comment.SubjectChineseName</h5>
+                    <div class="card-body p-0">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td class="td-col-4 text-right align-middle">授課教師</td>
+                                    <td class="td-col-6 align-middle">@comment.Teachers</td>
+                                </tr>
+                                <tr>
+                                    <td class="td-col-4 text-right align-middle">班級簡稱</td>
+                                    <td class="td-col-6 align-middle">@comment.ClassShortName</td>
+                                </tr>
+                                <tr>
+                                    <td class="td-col-4 text-right align-middle">評價</td>
+                                    <td class="td-col-6 align-middle">@comment.Grade.ToString("f2")</td>
+                                </tr>
+                                <tr>
+                                    <td class="td-col-4 text-right align-middle">評論時間</td>
+                                    <td class="td-col-6 align-middle">@comment.RecordTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer text-center">
+                        <span class="btn-group">
+                            <a asp-page="/Courses/Delete/Content" asp-route-CommentGuid="@comment.Guid" class="btn btn-danger">刪除</a>
+                            <a asp-page="/Courses/Edit/Content" asp-route-CommentGuid="@comment.Guid" class="btn btn-warning">修改</a>
+                            <a asp-page="/Courses/Details" asp-route-CommentGuid="@comment.Guid" class="btn btn-primary">檢視</a>
+                        </span>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

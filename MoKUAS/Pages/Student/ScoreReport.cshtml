@@ -1,0 +1,22 @@
+﻿@page
+@model ScoreReportModel
+@{
+    Layout = "_LayoutStudents";
+    ViewData["Title"] = "歷年成績報表";
+}
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#pdfjs-viewer').attr('width', '100%');
+            $('#pdfjs-viewer').attr('height', $(window).height() - 158);
+        });
+    </script>
+}
+
+<div class="container">
+    <div asp-validation-summary="All" class="my-3"></div>
+</div>
+<iframe src="~/lib/pdf.js-1.9.426/web/viewer.html?file=@Model.FileUrl"
+        frameborder="0"
+        id="pdfjs-viewer"></iframe>

@@ -1,0 +1,80 @@
+﻿@page
+@model FeedbackModel
+@{
+    Layout = "_LayoutStudents";
+    ViewData["Title"] = "Feedback";
+}
+
+@section scripts {
+    <!-- reCaptcha -->
+    <script src='https://www.google.com/recaptcha/api.js' type="text/javascript"></script>
+    <!-- resize reCaptcha -->
+    <script>
+        function resizeReCaptcha() {
+            var width = $('.g-recaptcha').parent().width();
+            if (width < 302) {
+                var scale = width / 302;
+                $('.g-recaptcha').css('transform', 'scale(' + scale + ')');
+                $('.g-recaptcha').css('-webkit-transform', 'scale(' + scale + ')');
+                $('.g-recaptcha').css('transform-origin', '0 0');
+                $('.g-recaptcha').css('-webkit-transform-origin', '0 0');
+            }
+        }
+        $(document).ready(function () {
+            $(window).on('resize', function () {
+                resizeReCaptcha();
+            });
+            resizeReCaptcha();
+        });
+    </script>
+    <!-- verify reCaptcha (success or expired) -->
+    <script>
+        var verifyCallback = function (response) {
+            $('#submitWidget').show();
+            $('#reCAPTCHAWidget').hide();
+        };
+
+        var expiredCallback = function () {
+            $('#submitWidget').hide();
+            $('#reCAPTCHAWidget').show();
+        };
+    </script>
+}
+
+<div class="container col-12 col-sm-4">
+    <div asp-validation-summary="All" class="my-3"></div>
+    <h3><strong>回報、問題或建議</strong></h3>
+    <hr />
+    <form asp-action="/Student/Feedback" method="post">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label text-sm-right">電子信箱</label>
+            <div class="col-sm-10">
+                <input asp-for="Feedback.Email" type="email" class="form-control" placeholder="Your Email Address" required />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label text-sm-right">回應類型</label>
+            <div class="col-sm-10">
+                <select asp-for="Feedback.Type" asp-items="@Model.Types" class="form-control" required></select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label text-sm-right">內容</label>
+            <div class="col-sm-10">
+                <textarea asp-for="Feedback.Content" class="form-control" rows="10" maxlength="100" placeholder="長度限制 500 個全形字元或 1000 個半形字元" required></textarea>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label text-sm-right"></label>
+            <div class="col-sm-10">
+                <div class="g-recaptcha" id="reCAPTCHAWidget"
+                     data-sitekey="@ViewData["ReCaptchaKey"]"
+                     data-callback="verifyCallback"
+                     data-expired-callback="expiredCallback"></div>
+                <div id="submitWidget" style="display: none;">
+                    <input type="submit" class="btn btn-primary btn-block" value="送出" id="submit" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

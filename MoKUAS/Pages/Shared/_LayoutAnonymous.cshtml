@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewData["Title"]</title>
+    <!-- Favicon Package -->
+    <link rel="apple-touch-icon" sizes="180x180" href="~/favicons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="~/favicons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="~/favicons/favicon-16x16.png" />
+    <link rel="manifest" href="~/favicons/site.webmanifest" />
+    <link rel="mask-icon" href="~/favicons/safari-pinned-tab.svg" color="#5bbad5" />
+    <meta name="msapplication-TileColor" content="#da532c" />
+    <meta name="theme-color" content="#ffffff" />
+    <!-- CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/lib//fonts/fonts.css" type="text/css" />
+    <style type="text/css">        @@media (max-width: 991px) {
+            div.navbar-btn-right {
+                float: right;
+                margin-right: 0px;
+            }
+        }</style>
+    <!-- Other CSS -->
+    @RenderSection("styles", false)
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a asp-page="/Index" class="navbar-brand">
+                <img src="~/favicons/favicon-512x512-square.png" width="30" height="30" class="d-inline-block align-top" />
+                MoKUAS
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggler">
+                <div class="form-inline ml-auto mt-2 my-lg-0 navbar-btn-right">
+                    <a href="#" class="btn btn-outline-warning"><i class="fa fa-fw fa-user-plus" aria-hidden="true"></i> Sign up</a>
+                    <a asp-page="/Login" class="btn btn-primary ml-2 my-lg-0"><i class="fa fa-fw fa-sign-in" aria-hidden="true"></i> Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        @RenderBody()
+    </div>
+    <!-- Bootstrap -->
+    <script src="~/lib/jquery/jquery.min.js" type="text/javascript"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    @RenderSection("scripts", false)
+    <!-- lazy load CSS -->
+    <script type="text/javascript">
+        var cb = function () {
+            var a = document.createElement('link');
+            a.rel = 'stylesheet';
+            a.href = '/lib/fonts/fonts.css';
+            a.media = 'screen and (min-width: 769px)';
+
+            var z = document.getElementsByTagName('head')[0];
+            z.parentNode.insertBefore(a, z);
+        };
+        var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+            webkitRequestAnimationFrame || msRequestAnimationFrame;
+        if (raf) raf(cb);
+        else window.addEventListener('load', cb);
+    </script>
+    <footer>
+        <hr />
+        <div class="text-center">
+            <p>Copyright &copy; @DateTime.Now.Year Yan</p>
+        </div>
+    </footer>
+</body>
+</html>

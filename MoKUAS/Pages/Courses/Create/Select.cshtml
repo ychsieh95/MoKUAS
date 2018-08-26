@@ -1,0 +1,307 @@
+﻿@page "{SysValue?}"
+@model SelectModel
+@{
+    Layout = "_LayoutStudents";
+    ViewData["Title"] = "新增評論";
+}
+
+@section scripts {
+    <script type="text/javascript">
+        $('#SysValue').change(function () {
+            $(this).prop('disabled', true);
+            window.location = '/Courses/Create/Select/' + $(this).val();
+            //$('#search-form').submit();
+        });
+    </script>
+    <script src="~/lib/string.js/js/string.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $('a').click(function () {
+            if ($(this).closest('form').attr('method') === 'post') {
+                var subjectChineseName = $(this).closest('form').find("input[name='Class.SubjectChineseName']").val();
+                var classShortName = $(this).closest('form').find("input[name='Class.ClassShortName']").val();
+                var time = $(this).closest('form').find("input[name='Class.Time']").val();
+                var teachers = $(this).closest('form').find("input[name='Class.Teachers']").val();
+                var classroom = $(this).closest('form').find("input[name='Class.Classroom']").val();
+                if (confirm(String.format("課程名稱：{0}\n班級簡稱：{1}\n上課時間：{2}\n授課教師：{3}\n上課教室：{4}\n\n確定填寫此課程之評論？",
+                    subjectChineseName, classShortName, time, teachers, classroom))) {
+                    $(this).closest('form').submit();
+                }
+            }
+        });
+    </script>
+}
+
+<div class="container">
+    <div asp-validation-summary="All" class="my-3"></div>
+    <form asp-action="/Courses/Create/Select" method="get" class="my-3" id="search-form">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label text-sm-right">選擇查詢課表學期：</label>
+            <div class="col-sm-10">
+                <select asp-for="SysValue" asp-items="@Model.SysValues" class="form-control" required></select>
+            </div>
+        </div>
+    </form>
+    <hr />
+    <div class="d-none d-sm-block" name="course-list">
+        <div style="text-align: center;"><h3><strong>選課清單</strong></h3></div>
+        <table class="table table-striped">
+            <thead class="w-100">
+                <tr class="table-info text-center">
+                    <th class="align-middle">選課代號</th>
+                    <th class="align-middle" style="text-align: left;">課程名稱</th>
+                    <th class="align-middle">班級簡稱</th>
+                    <th class="align-middle">分組</th>
+                    <th class="align-middle">學分</th>
+                    <th class="align-middle">授課時數</th>
+                    <th class="align-middle">必選修</th>
+                    <th class="align-middle">開課別</th>
+                    <th class="align-middle" style="text-align: left;">上課時間</th>
+                    <th class="align-middle" style="text-align: left;">授課教師</th>
+                    <th class="align-middle">上課教室</th>
+                    <th class="align-middle"></th>
+                </tr>
+            </thead>
+            <tbody class="w-100">
+                @foreach (var course in Model.CourseList)
+                {
+                    <tr class="text-center">
+                        <td class="align-middle">@course.CourseId</td>
+                        <td class="align-middle" style="text-align: left;">@course.SubjectChineseName</td>
+                        <td class="align-middle">@course.ClassShortName</td>
+                        <td class="align-middle">@course.Group</td>
+                        <td class="align-middle">@course.PropertiesCredit</td>
+                        <td class="align-middle">@course.TeachTime</td>
+                        <td class="align-middle">@course.PropertiesRequiredOrElective</td>
+                        <td class="align-middle">@course.ClassType</td>
+                        <td class="align-middle" style="text-align: left;">@course.Time</td>
+                        <td class="align-middle" style="text-align: left;">@course.Teachers</td>
+                        <td class="align-middle">@course.Classroom</td>
+                        <td class="align-middle">
+                            @if (!course.DoneComment)
+                            {
+                                <form asp-page="/Courses/Add/Select" method="post">
+                                    <input asp-for="SysValue" type="hidden" />
+                                    <input asp-for="Class.CourseId" type="hidden" value="@course.CourseId" />
+                                    <input asp-for="Class.SubjectChineseName" type="hidden" value="@course.SubjectChineseName" />
+                                    <input asp-for="Class.ClassShortName" type="hidden" value="@course.ClassShortName" />
+                                    <input asp-for="Class.Teachers" type="hidden" value="@course.Teachers" />
+                                    <input type="submit" value="選擇" class="btn btn-primary" />
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <hr />
+    </div>
+
+    <div class="d-none d-sm-block" name="schedule">
+        <div style="text-align: center;"><h3><strong>課程列表</strong></h3></div>
+        <table class="table table-bordered table-striped">
+            <thead class="w-100">
+                <tr class="table-info text-center">
+                    <th class="align-middle" style="width: 12.5%;">　</th>
+                    <th class="align-middle" style="width: 12.5%;">一</th>
+                    <th class="align-middle" style="width: 12.5%;">二</th>
+                    <th class="align-middle" style="width: 12.5%;">三</th>
+                    <th class="align-middle" style="width: 12.5%;">四</th>
+                    <th class="align-middle" style="width: 12.5%;">五</th>
+                    <th class="align-middle" style="width: 12.5%;">六</th>
+                    <th class="align-middle" style="width: 12.5%;">日</th>
+                </tr>
+            </thead>
+            <tbody class="w-100">
+                @{
+                    int counter = 0;
+                    @foreach (var periodListList in Model.Schedule)
+                    {
+                        <tr class="text-center">
+                            @switch (counter++)
+                            {
+                                case 0:
+                                    <td class="align-middle">M</td>
+                                    break;
+                                case 1:
+                                    <td class="align-middle">第 1 節<br />0810-0900</td>
+                                    break;
+                                case 2:
+                                    <td class="align-middle">第 2 節<br />0910-1000</td>
+                                    break;
+                                case 3:
+                                    <td class="align-middle">第 3 節<br />1010-1100</td>
+                                    break;
+                                case 4:
+                                    <td class="align-middle">第 4 節<br />1110-1200</td>
+                                    break;
+                                case 5:
+                                    <td class="align-middle">A<br />1200-1330</td>
+                                    break;
+                                case 6:
+                                    <td class="align-middle">第 5 節<br />1330-1420</td>
+                                    break;
+                                case 7:
+                                    <td class="align-middle">第 6 節<br />1430-1520</td>
+                                    break;
+                                case 8:
+                                    <td class="align-middle">第 7 節<br />1530-1620</td>
+                                    break;
+                                case 9:
+                                    <td class="align-middle">第 8 節<br />1630-1720</td>
+                                    break;
+                                case 10:
+                                    <td class="align-middle">B<br />1720-1830</td>
+                                    break;
+                                case 11:
+                                    <td class="align-middle">第 11 節<br />1830-1920</td>
+                                    break;
+                                case 12:
+                                    <td class="align-middle">第 12 節<br />1930-2020</td>
+                                    break;
+                                case 13:
+                                    <td class="align-middle">第 13 節<br />2030-2120</td>
+                                    break;
+                                case 14:
+                                    <td class="align-middle">第 14 節<br />2130-2200</td>
+                                    break;
+                            }
+                            @foreach (var course in periodListList)
+                            {
+                                <td class="align-middle">
+                                    @if (!string.IsNullOrEmpty(course.CourseId) && !course.DoneComment)
+                                    {
+                                        <form asp-page="/Courses/Add/Select" method="post">
+                                            <input asp-for="SysValue" type="hidden" />
+                                            <input asp-for="Class.CourseId" type="hidden" value="@course.CourseId" />
+                                            <input asp-for="Class.SubjectChineseName" type="hidden" value="@course.SubjectChineseName" />
+                                            <input asp-for="Class.ClassShortName" type="hidden" value="@course.ClassShortName" />
+                                            <input asp-for="Class.Time" type="hidden" value="@course.Time" />
+                                            <input asp-for="Class.Teachers" type="hidden" value="@course.Teachers" />
+                                            <input asp-for="Class.Classroom" type="hidden" value="@course.Classroom" />
+                                            <a href="#">
+                                                @course.SubjectChineseName<br />@course.Teachers<br />@course.Classroom
+                                            </a>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        @if (!string.IsNullOrEmpty(course.Teachers))
+                                        {
+                                            <br />
+                                            @course.Teachers
+                                        }
+                                        @if (!string.IsNullOrEmpty(course.Classroom))
+                                        {
+                                            <br />
+                                            @course.Classroom
+                                        }
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="d-sm-none" name="schedule" style="overflow-y: auto;">
+        <div style="text-align: center;"><h3><strong>課程列表</strong></h3></div>
+        <table class="table table-bordered">
+            <thead class="w-100">
+                <tr class="table-info text-center">
+                    <th class="align-middle" style="width: 12.5%;">　</th>
+                    <th class="align-middle" style="width: 12.5%;">一</th>
+                    <th class="align-middle" style="width: 12.5%;">二</th>
+                    <th class="align-middle" style="width: 12.5%;">三</th>
+                    <th class="align-middle" style="width: 12.5%;">四</th>
+                    <th class="align-middle" style="width: 12.5%;">五</th>
+                    <th class="align-middle" style="width: 12.5%;">六</th>
+                    <th class="align-middle" style="width: 12.5%;">日</th>
+                </tr>
+            </thead>
+            <tbody class="w-100">
+                @{
+                    counter = 0;
+                    foreach (var periodListList in Model.Schedule)
+                    {
+                        <tr class="text-center">
+                            @switch (counter++)
+                            {
+                                case 0:
+                                    <td>Ｍ</td>
+                                    break;
+                                case 1:
+                                    <td>１</td>
+                                    break;
+                                case 2:
+                                    <td>２</td>
+                                    break;
+                                case 3:
+                                    <td>３</td>
+                                    break;
+                                case 4:
+                                    <td>４</td>
+                                    break;
+                                case 5:
+                                    <td>Ａ</td>
+                                    break;
+                                case 6:
+                                    <td>５</td>
+                                    break;
+                                case 7:
+                                    <td>６</td>
+                                    break;
+                                case 8:
+                                    <td>７</td>
+                                    break;
+                                case 9:
+                                    <td>８</td>
+                                    break;
+                                case 10:
+                                    <td>Ｂ</td>
+                                    break;
+                                case 11:
+                                    <td>11</td>
+                                    break;
+                                case 12:
+                                    <td>12</td>
+                                    break;
+                                case 13:
+                                    <td>13</td>
+                                    break;
+                                case 14:
+                                    <td>14</td>
+                                    break;
+                            }
+
+                            @foreach (var course in periodListList)
+                            {
+                                <td>
+                                    @if (!string.IsNullOrEmpty(course.CourseId) && !course.DoneComment)
+                                    {
+                                        <form asp-page="/Courses/Add/Select" method="post">
+                                            <input asp-for="SysValue" type="hidden" />
+                                            <input asp-for="Class.CourseId" type="hidden" value="@course.CourseId" />
+                                            <input asp-for="Class.SubjectChineseName" type="hidden" value="@course.SubjectChineseName" />
+                                            <input asp-for="Class.ClassShortName" type="hidden" value="@course.ClassShortName" />
+                                            <input asp-for="Class.Time" type="hidden" value="@course.Time" />
+                                            <input asp-for="Class.Teachers" type="hidden" value="@course.Teachers" />
+                                            <input asp-for="Class.Classroom" type="hidden" value="@course.Classroom" />
+                                            <a href="#">
+                                                @(course.SubjectChineseName.Length > 1 ? course.SubjectChineseName.Substring(0, 1) : course.SubjectChineseName)
+                                            </a>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        @(course.SubjectChineseName != null && course.SubjectChineseName.Length > 1 ? course.SubjectChineseName.Substring(0, 1) : course.SubjectChineseName)
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

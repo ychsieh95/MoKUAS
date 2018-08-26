@@ -1,0 +1,37 @@
+﻿@page "{PaymentParams?}"
+@model PaymentsModel
+@{
+    Layout = "_LayoutStudents";
+    ViewData["Title"] = "繳費單";
+}
+
+@section scripts {
+    <script type="text/javascript">
+        $('#PaymentParams').change(function () {
+            $(this).prop('disabled', true);
+            window.location = '/Student/Payments/' + $(this).val();
+            //$('#choose-form').submit();
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#pdfjs-viewer').attr('width', '100%');
+            $('#pdfjs-viewer').attr('height', $(window).height() - 244);
+        });
+    </script>
+}
+
+<div class="container">
+    <div asp-validation-summary="All" class="my-3"></div>
+    <form asp-action="/Student/Payments" method="get" class="my-3" id="choose-form">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label text-sm-right">選擇繳費單：</label>
+            <div class="col-sm-10">
+                <select asp-for="PaymentParams" asp-items="@Model.DropDownList" class="form-control" required></select>
+            </div>
+        </div>
+    </form>
+    <iframe src="~/lib/pdf.js-1.9.426/web/viewer.html?file=@Model.FileUrl"
+            frameborder="0"
+            id="pdfjs-viewer"></iframe>
+</div>

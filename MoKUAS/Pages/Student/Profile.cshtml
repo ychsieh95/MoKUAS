@@ -1,0 +1,111 @@
+﻿@page
+@model ProfileModel
+@{
+    Layout = "_LayoutStudents";
+    ViewData["Title"] = "學籍資料";
+}
+
+<div class="container">
+    <div class="text-center my-3">
+        <div class="d-none d-sm-block">
+            <h1>國立高雄科技大學</h1>
+            <h2>@Model.SysYear 學年度第 @Model.SysSemester 學期</h2>
+        </div>
+        <div class="d-sm-none">
+            <h1>NKUST @Model.SysYear-@Model.SysSemester</h1>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h5 class="text-center">學生個人學籍資料</h5>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-bordered">
+                <thead class="w-100">
+                    <tr class="text-center">
+                        <th class="align-middle" colspan="2">
+                            <img src="@Model.PersonalPictureUrl"
+                                 class="img-thumbnail"
+                                 style="max-width: 200px;"
+                                 alt="@Model.Profile.StudentIdNumber Personal Picture" />
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="w-100">
+                    <tr class="text-center">
+                        <td class="align-middle">學制</td>
+                        <td class="align-middle">@Model.Profile.EductionalSystem</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="align-middle">科系</td>
+                        <td class="align-middle">@Model.Profile.College</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="align-middle">班級</td>
+                        <td class="align-middle">@Model.Profile.ChtClass</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="align-middle">學號</td>
+                        <td class="align-middle">@Model.Profile.StudentIdNumber</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="align-middle">姓名</td>
+                        <td class="align-middle">@Model.Profile.ChtName</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="align-middle">英文姓名</td>
+                        <td class="align-middle">@Model.Profile.EngName</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="align-middle">出生日期</td>
+                        <td class="align-middle">@Model.Profile.Birthday.ToString("yyyy-MM-dd")</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="align-middle">出生地</td>
+                        <td class="align-middle">@Model.Profile.BirthPlace</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="align-middle">性別</td>
+                        <td class="align-middle">@Model.Profile.Gender</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="align-middle">服役紀錄</td>
+                        <td class="align-middle">@Model.Profile.ServiceRecord</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="align-middle">身分證字號</td>
+                        <td class="align-middle">@Model.Profile.IdNumber</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="align-middle">在學狀態</td>
+                        <td class="align-middle">@Model.Profile.StateOfDuringTheSchool</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="align-middle">入學前學歷</td>
+                        <td class="align-middle">@Model.Profile.BeforeEducation</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="align-middle">家長姓名</td>
+                        <td class="align-middle">@Model.Profile.ParantName</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="align-middle">與家長關係</td>
+                        <td class="align-middle">@Model.Profile.RelationshipOfParant</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="align-middle">聯絡電話</td>
+                        <td class="align-middle">@Model.Profile.CorrespondenceTele</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="align-middle">戶籍地址</td>
+                        <td class="align-middle">@Model.Profile.PermanentAddress</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="align-middle">通訊地址</td>
+                        <td class="align-middle">@Model.Profile.CorrespondenceAddress</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

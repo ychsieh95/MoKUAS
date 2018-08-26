@@ -1,0 +1,642 @@
+﻿@page
+@model OverviewModel
+@{
+    Layout = "_LayoutStudents";
+    ViewData["Title"] = "課程概要";
+}
+
+@section styles {
+    <!-- toggle switch -->
+    <link rel="stylesheet" href="~/lib/bootstrap-toggle/css/bootstrap-toggle.min.css" type="text/css" />
+    <!-- star rating -->
+    <link rel="stylesheet" href="~/lib/bootstrap-star-rating/css/star-rating.min.css" type="text/css" />
+    <!-- table[class info] -->
+    <style type="text/css">
+        @@media only screen and (min-width: 576px) {
+            .td-col-sm-1 { width: 10%; }
+            .td-col-sm-2 { width: 20%; }
+            .td-col-sm-3 { width: 30%; }
+            .td-col-sm-4 { width: 40%; }
+            .td-col-sm-5 { width: 50%; }
+            .td-col-sm-6 { width: 60%; }
+            .td-col-sm-7 { width: 70%; }
+            .td-col-sm-8 { width: 80%; }
+            .td-col-sm-9 { width: 90%; }
+            .td-col-sm-10 { width: 100%; }
+        }
+        @@media only screen and (max-width: 575px) {
+            .td-col-1 { width: 10%; }
+            .td-col-2 { width: 20%; }
+            .td-col-3 { width: 30%; }
+            .td-col-4 { width: 40%; }
+            .td-col-5 { width: 50%; }
+            .td-col-6 { width: 60%; }
+            .td-col-7 { width: 70%; }
+            .td-col-8 { width: 80%; }
+            .td-col-9 { width: 90%; }
+            .td-col-10 { width: 100%; }
+        }
+    </style>
+}
+
+@section scripts {
+    <!-- toggle switch -->
+    <script src="~/lib/bootstrap-toggle/js/bootstrap-toggle.min.js" type="text/javascript"></script>
+    <!-- chart.js -->
+    <script src="~/lib/Chart.js/Chart.min.js" type="text/javascript"></script>
+    <!-- star rating -->
+    <script src="~/lib/bootstrap-star-rating/js/star-rating.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $('.rating').rating('refresh',
+            {
+                disabled: true,
+                showClear: false,
+                starCaptions: function (val) {
+                    return val.toFixed(1) + ' Stars';
+                },
+                starCaptionClasses: function (val) {
+                    var captionClasses = '';
+                    switch (true) {
+                        case (val <= 2): captionClasses = 'label label-danger badge-danger'; break;
+                        case (val <= 3): captionClasses = 'label label-warning badge-warning'; break;
+                        case (val <= 4): captionClasses = 'label label-primary badge-primary'; break;
+                        case (val <= 5): captionClasses = 'label label-success badge-success'; break;
+                    }
+                    return captionClasses;
+                }
+            });
+    </script>
+    <!-- string.format function -->
+    <script src="~/lib/string.js/js/string.js" type="text/javascript"></script>
+    <!-- Chart.js data -->
+    <script type="text/javascript">
+            var config1 = {
+                type: 'horizontalBar',
+                data: {
+                    datasets: [{
+                        data: [
+                            @Model.Overview.TeachingMethods.IsBlackboard,
+                            @Model.Overview.TeachingMethods.IsBook,
+                            @Model.Overview.TeachingMethods.IsPPT,
+                            @Model.Overview.TeachingMethods.IsBroadcast,
+                            @Model.Overview.TeachingMethods.IsBuild,
+                            @Model.Overview.TeachingMethods.IsInteractive
+                        ],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(255, 159, 64, 0.8)',
+                            'rgba(255, 194, 51, 0.8)',
+                            'rgba(34, 206, 206, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(68, 114, 196, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(255, 194, 51, 1)',
+                            'rgba(34, 206, 206, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(68, 114, 196, 1)'
+                        ],
+                        borderWidth: 1
+                    }],
+                    labels: ['黑板教學', '課本教學', 'PPT教學', '廣播教學', '實作教學', '互動教學']
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        fontSize: 16,
+                        fontColor: '#666',
+                        position: 'top',
+                        text: '教學方式'
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltips: {
+                        callbacks: {
+                            title: function (tooltipItem, data) {
+                                return '';
+                            },
+                            label: function (tooltipItem, data) {
+                                var dataset = data.datasets[tooltipItem.datasetIndex];
+                                var currentLabel = data.labels[tooltipItem.index];
+                                var currentValue = dataset.data[tooltipItem.index];
+                                var commentCount = @Model.Overview.CommentCount;
+                                return String.format("{0}：{1} ({2}%)", currentLabel, currentValue, Math.floor(((currentValue / commentCount) * 100) + 0.5));
+                            }
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                max: @Model.Overview.CommentCount,
+                                min : 0,
+                                callback: function(value, index, values) {
+                                    var commentCount = @Model.Overview.CommentCount;
+                                    if ('@(Model.DeviceType == DeviceExtensions.DeviceType.Mobile)' === 'True') {
+                                        if (index != values.length - 2) {
+                                            return value;
+                                        }
+                                    }
+                                    else if (Number.isInteger(value)) { return value; }
+                                },
+                                fontColor: '#666'
+                            },
+                            gridLines: {
+                                color: 'rgba(0, 0, 0, 0.1)',
+                                zeroLineColor: 'rgba(0, 0, 0, 0.25)',
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                fontColor: '#666'
+                            },
+                            gridLines: {
+                                color: 'rgba(0, 0, 0, 0.1)',
+                                zeroLineColor: 'rgba(0, 0, 0, 0.25)',
+                            }
+                        }]
+                    }
+                }
+            };
+            var config2 = {
+                type: 'horizontalBar',
+                data: {
+                    datasets: [{
+                        data: [
+                            @Model.Overview.RollCallMethods.ByInPerson,
+                            @Model.Overview.RollCallMethods.BySignInSheet,
+                            @Model.Overview.RollCallMethods.ByOnline,
+                            @Model.Overview.RollCallMethods.ByClasswork,
+                            @Model.Overview.RollCallMethods.ByTest
+                        ],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(255, 159, 64, 0.8)',
+                            'rgba(255, 194, 51, 0.8)',
+                            'rgba(34, 206, 206, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(68, 114, 196, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(255, 194, 51, 1)',
+                            'rgba(34, 206, 206, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(68, 114, 196, 1)'
+                        ],
+                        borderWidth: 1
+                    }],
+                    labels: ['親自點名', '簽到點名', '線上點名', '作業點名', '測驗點名']
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        fontSize: 16,
+                        fontColor: '#666',
+                        position: 'top',
+                        text: '點名方式（@($"點名機率{ Model.Overview.RollCallMethods.RollCallFrequencyStr }：{ Model.Overview.RollCallMethods.RollCallFrequencyPercent }%")）'
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltips: {
+                        callbacks: {
+                            title: function (tooltipItem, data) {
+                                return '';
+                            },
+                            label: function (tooltipItem, data) {
+                                var dataset = data.datasets[tooltipItem.datasetIndex];
+                                var currentLabel = data.labels[tooltipItem.index];
+                                var currentValue = dataset.data[tooltipItem.index];
+                                return String.format("{0}：{1} ({2}%)", currentLabel, currentValue, Math.floor(((currentValue / @Model.Overview.CommentCount) * 100) + 0.5));
+                            }
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                max: @Model.Overview.CommentCount,
+                                min : 0,
+                                callback: function(value, index, values) {
+                                    var commentCount = @Model.Overview.CommentCount;
+                                    if ('@(Model.DeviceType == DeviceExtensions.DeviceType.Mobile)' === 'True') {
+                                        if (index != values.length - 2) {
+                                            return value;
+                                        }
+                                    }
+                                    else if (Number.isInteger(value)) { return value; }
+                                },
+                                fontColor: '#666'
+                            },
+                            gridLines: {
+                                color: 'rgba(0, 0, 0, 0.1)',
+                                zeroLineColor: 'rgba(0, 0, 0, 0.25)',
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                fontColor: '#666'
+                            },
+                            gridLines: {
+                                color: 'rgba(0, 0, 0, 0.1)',
+                                zeroLineColor: 'rgba(0, 0, 0, 0.25)',
+                            }
+                        }]
+                    }
+                }
+            };
+            var config3 = {
+                type: 'horizontalBar',
+                data: {
+                    datasets: [{
+                        data: [
+                            @Model.Overview.ClassworkExam.HaveClasswork,
+                            @Model.Overview.ClassworkExam.HaveTest,
+                            @Model.Overview.ClassworkExam.HaveMidtermExam,
+                            @Model.Overview.ClassworkExam.HaveFinalExam
+                        ],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(255, 159, 64, 0.8)',
+                            'rgba(255, 194, 51, 0.8)',
+                            'rgba(34, 206, 206, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(68, 114, 196, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(255, 194, 51, 1)',
+                            'rgba(34, 206, 206, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(68, 114, 196, 1)'
+                        ],
+                        borderWidth: 1
+                    }],
+                    labels: ['平時作業', '平時考試', '期中考試', '期末考試']
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        fontSize: 16,
+                        fontColor: '#666',
+                        position: 'top',
+                        text: '作業與考試'
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltips: {
+                        callbacks: {
+                            title: function (tooltipItem, data) {
+                                return '';
+                            },
+                            label: function (tooltipItem, data) {
+                                var dataset = data.datasets[tooltipItem.datasetIndex];
+                                var currentLabel = data.labels[tooltipItem.index];
+                                var currentValue = dataset.data[tooltipItem.index];
+                                return String.format("{0}：{1} ({2}%)", currentLabel, currentValue, Math.floor(((currentValue / @Model.Overview.CommentCount) * 100) + 0.5));
+                            }
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                max: @Model.Overview.CommentCount,
+                                min : 0,
+                                callback: function(value, index, values) {
+                                    var commentCount = @Model.Overview.CommentCount;
+                                    if ('@(Model.DeviceType == DeviceExtensions.DeviceType.Mobile)' === 'True') {
+                                        if (index != values.length - 2) {
+                                            return value;
+                                        }
+                                    }
+                                    else if (Number.isInteger(value)) { return value; }
+                                },
+                                fontColor: '#666'
+                            },
+                            gridLines: {
+                                color: 'rgba(0, 0, 0, 0.1)',
+                                zeroLineColor: 'rgba(0, 0, 0, 0.25)',
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                fontColor: '#666'
+                            },
+                            gridLines: {
+                                color: 'rgba(0, 0, 0, 0.1)',
+                                zeroLineColor: 'rgba(0, 0, 0, 0.25)',
+                            }
+                        }]
+                    }
+                }
+            };
+            var config3 = {
+                type: 'horizontalBar',
+                data: {
+                    datasets: [{
+                        data: [
+                            @Model.Overview.ClassworkExam.HaveClasswork,
+                            @Model.Overview.ClassworkExam.HaveTest,
+                            @Model.Overview.ClassworkExam.HaveMidtermExam,
+                            @Model.Overview.ClassworkExam.HaveFinalExam
+                        ],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(255, 159, 64, 0.8)',
+                            'rgba(255, 194, 51, 0.8)',
+                            'rgba(34, 206, 206, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(68, 114, 196, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(255, 194, 51, 1)',
+                            'rgba(34, 206, 206, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(68, 114, 196, 1)'
+                        ],
+                        borderWidth: 1
+                    }],
+                    labels: ['平時作業', '平時考試', '期中考試', '期末考試']
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        fontSize: 16,
+                        fontColor: '#666',
+                        position: 'top',
+                        text: '作業與考試'
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltips: {
+                        callbacks: {
+                            title: function (tooltipItem, data) {
+                                return '';
+                            },
+                            label: function (tooltipItem, data) {
+                                var dataset = data.datasets[tooltipItem.datasetIndex];
+                                var currentLabel = data.labels[tooltipItem.index];
+                                var currentValue = dataset.data[tooltipItem.index];
+                                return String.format("{0}：{1} ({2}%)", currentLabel, currentValue, Math.floor(((currentValue / @Model.Overview.CommentCount) * 100) + 0.5));
+                            }
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                max: @Model.Overview.CommentCount,
+                                min : 0,
+                                callback: function(value, index, values) {
+                                    var commentCount = @Model.Overview.CommentCount;
+                                    if ('@(Model.DeviceType == DeviceExtensions.DeviceType.Mobile)' === 'True') {
+                                        if (index != values.length - 2) {
+                                            return value;
+                                        }
+                                    }
+                                    else if (Number.isInteger(value)) { return value; }
+                                },
+                                fontColor: '#666'
+                            },
+                            gridLines: {
+                                color: 'rgba(0, 0, 0, 0.1)',
+                                zeroLineColor: 'rgba(0, 0, 0, 0.25)',
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                fontColor: '#666'
+                            },
+                            gridLines: {
+                                color: 'rgba(0, 0, 0, 0.1)',
+                                zeroLineColor: 'rgba(0, 0, 0, 0.25)',
+                            }
+                        }]
+                    }
+                }
+            };
+            var config4 = {
+                type: 'horizontalBar',
+                data: {
+                    datasets: [
+                        {
+                            label: '5 分',
+                            data: [@Model.Overview.Grades.Grade5],
+                            backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                            hoverBackgroundColor: 'rgba(54, 162, 235, 1)'
+                        },
+                        {
+                            label: '4 分',
+                            data: [@Model.Overview.Grades.Grade4],
+                            backgroundColor: 'rgba(34, 206, 206, 0.8)',
+                            hoverBackgroundColor: 'rgba(34, 206, 206, 1)'
+                        },
+                        {
+                            label: '3 分',
+                            data: [@Model.Overview.Grades.Grade3],
+                            backgroundColor: 'rgba(255, 194, 51, 0.8)',
+                            hoverBackgroundColor: 'rgba(255, 194, 51, 1)'
+                        },
+                        {
+                            label: '2 分',
+                            data: [@Model.Overview.Grades.Grade2],
+                            backgroundColor: 'rgba(255, 159, 64, 0.8)',
+                            hoverBackgroundColor: 'rgba(255, 159, 64, 1)'
+                        },
+                        {
+                            label: '1 分',
+                            data: [@Model.Overview.Grades.Grade1],
+                            backgroundColor: 'rgba(255, 99, 132, 0.8)',
+                            hoverBackgroundColor: 'rgba(255, 99, 132, 1)'
+                        }
+                    ],
+                    labels: ['　　評價']
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        fontSize: 16,
+                        fontColor: '#666',
+                        position: 'top',
+                        text: '評價'
+                    },
+                    legend: {
+                        display: true,
+                        labels: {
+                            fontColor: '#666'
+                        }
+                    },
+                    tooltips: {
+                        callbacks: {
+                            title: function (tooltipItem, data) {
+                                return '';
+                            },
+                            label: function (tooltipItem, data) {
+                                var dataset = data.datasets[tooltipItem.datasetIndex];
+                                var currentLabel = dataset.label;
+                                var currentValue = dataset.data[tooltipItem.index];
+                                return String.format("{0}：{1} ({2}%)", currentLabel, currentValue, Math.floor(((currentValue / @Model.Overview.CommentCount) * 100) + 0.5));
+                            }
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            stacked: true,
+                            ticks: {
+                                max: @Model.Overview.CommentCount,
+                                min : 0,
+                                callback: function(value, index, values) {
+                                    var commentCount = @Model.Overview.CommentCount;
+                                    if ('@(Model.DeviceType == DeviceExtensions.DeviceType.Mobile)' === 'True') {
+                                        if (index != values.length - 2) {
+                                            return value;
+                                        }
+                                    }
+                                    else if (Number.isInteger(value)) { return value; }
+                                },
+                                fontColor: '#666'
+                            },
+                            gridLines: {
+                                color: 'rgba(0, 0, 0, 0.1)',
+                                zeroLineColor: 'rgba(0, 0, 0, 0.25)',
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                fontColor: '#666'
+                            },
+                            gridLines: {
+                                color: 'rgba(0, 0, 0, 0.1)',
+                                zeroLineColor: 'rgba(0, 0, 0, 0.25)',
+                            }
+                        }]
+                    },
+                }
+            };
+            Chart.defaults.global.defaultFontFamily = "'Source Sans Pro Regular', 'Noto Sans TC', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
+            window.onload = function () {
+                var ctx1 = document.getElementById("teaching-methods-chart").getContext("2d");
+                window.myPie = new Chart(ctx1, config1);
+                var ctx2 = document.getElementById("rollcall-methods-chart").getContext("2d");
+                window.myPie = new Chart(ctx2, config2);
+                var ctx3 = document.getElementById("classwork-exam-chart").getContext("2d");
+                window.myPie = new Chart(ctx3, config3);
+                var ctx4 = document.getElementById("grades-chart").getContext("2d");
+                window.myPie = new Chart(ctx4, config4);
+            }
+    </script>
+}
+
+<div class="container">
+    <div asp-validation-summary="All" class="my-3"></div>
+    <h1><strong>搜尋條件</strong></h1>
+    <form asp-action="/Courses/Overview" method="get" class="my-3">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label text-sm-right">課程名稱</label>
+            <div class="col-sm-10">
+                <input asp-for="SubjectChineseName" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label text-sm-right">授課教師</label>
+            <div class="col-sm-10">
+                <input asp-for="Teachers" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label text-sm-right">班級簡稱</label>
+            <div class="col-sm-10">
+                <input asp-for="ClassShortName" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label text-sm-right">關鍵字搜尋</label>
+            <div class="col-sm-10 btn-group">
+                <input asp-for="ByKeyword" type="checkbox" value="true" class="form-control" data-toggle="toggle" />
+            </div>
+        </div>
+        <div class="text-right">
+            <input type="submit" class="btn btn-primary" value="搜尋" />
+        </div>
+    </form>
+    <hr />
+    <h1 class="my-3">課程概要</h1>
+    <div class="row">
+        <div class="col-2">
+            <h3>基本資料</h3>
+        </div>
+        <div class="col-10">
+            <table class="table table-striped">
+                <thead class="w-100">
+                    <tr class="text-center">
+                        <th class="td-col-5 td-col-sm-2 align-middle">課程名稱</th>
+                        <th class="td-col-5 td-col-sm-8 align-middle">@Model.SubjectChineseName</th>
+                    </tr>
+                </thead>
+                <tbody class="w-100">
+                    <tr class="text-center">
+                        <td class="td-col-5 td-col-sm-2 align-middle">班級簡稱</td>
+                        <td class="td-col-5 td-col-sm-8 align-middle">@Model.ClassShortName</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="td-col-5 td-col-sm-2 align-middle">授課教師</td>
+                        <td class="td-col-5 td-col-sm-8 align-middle">@Model.Teachers</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="td-col-5 td-col-sm-2 align-middle">評論數</td>
+                        <td class="td-col-5 td-col-sm-8 align-middle">@Model.Overview.CommentCount</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-12 my-3"></div>
+        <div class="col-2">
+            <h3>統計結果</h3>
+        </div>
+        <div class="col-10">
+            <div><canvas id="teaching-methods-chart"></canvas></div>
+            <div><canvas id="rollcall-methods-chart"></canvas></div>
+            <div><canvas id="classwork-exam-chart"></canvas></div>
+            <div><canvas id="grades-chart"></canvas></div>
+        </div>
+        <div class="col-12 my-3"></div>
+        <div class="col-2">
+            <h3>平均評價</h3>
+        </div>
+        <div class="col-10">
+            <div class="d-none d-sm-block">
+                <input value="@Model.Overview.Grades.GradeAverage.ToString("f1")" class="rating"
+                       data-min="0" data-max="5" data-step="0.1" data-size="md" readonly />
+            </div>
+            <div class="d-sm-none">
+                <input value="@Model.Overview.Grades.GradeAverage.ToString("f1")" class="rating"
+                       data-min="0" data-max="5" data-step="0.1" data-size="xs" readonly />
+            </div>
+        </div>
+        <div class="col-12 text-right mt-3">
+            <a asp-page="/Courses/ListAll"
+               asp-route-SubjectChineseName="@Model.SubjectChineseName"
+               asp-route-Teachers="@Model.Teachers"
+               asp-route-ClassShortName="@Model.ClassShortName"
+               asp-route-ByKeyword="@Model.ByKeyword"
+               class="btn btn-primary">所有評論</a>
+        </div>
+    </div>
+</div>

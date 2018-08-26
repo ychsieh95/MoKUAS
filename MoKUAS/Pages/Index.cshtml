@@ -1,0 +1,91 @@
+﻿@page
+@model MoKUAS.Pages.IndexModel
+@{
+    Layout = "_LayoutAnonymous";
+    ViewData["Title"] = "MoKUAS";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-sm-12">
+            <div class="card mt-3">
+                <h3 class="card-header bg-info text-white"><i class="fa fa-bullhorn" aria-hidden="true"></i> 公告</h3>
+                <div class="card-body">
+                    <p>原 KUASxSECS 已遷移至新網址 <a href="http://course.holey.cc">course.holey.cc</a> 繼續提供原服務（逐步停止維護中）。</p>
+                    <p>目前 MoKUAS 提供所有 KUASxSECS 的功能，若有任何問題、建議或回饋，還麻煩請您透過<a asp-page="/Student/Feedback">回饋功能</a>告知，謝謝。</p>
+                </div>
+            </div>
+            <div class="card my-3">
+                <h3 class="card-header bg-primary text-white"><i class="fa fa-cog" aria-hidden="true"></i> 功能</h3>
+                <div class="card-body row">
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="card">
+                            <h5 class="card-header bg-secondary text-white">學期資訊</h5>
+                            <div class="card-body">
+                                <ul>
+                                    <li><a asp-page="/Student/Profile">學籍資料</a></li>
+                                    <li><a asp-page="/Student/CourseList">學期課表</a></li>
+                                    <li><a asp-page="/Student/Scores">學期成績</a></li>
+                                    <li><a asp-page="/Student/MissClasses">學期缺曠</a></li>
+                                    <li><a asp-page="/Student/Credits">學分試算</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-3 d-sm-none"></div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="card">
+                            <h5 class="card-header bg-secondary text-white">預警報表</h5>
+                            <div class="card-body">
+                                <ul>
+                                    <li><a asp-page="/Student/MidtermAlerts">期中預警資料</a></li>
+                                    <li><a asp-page="/Student/ScoreReport">歷年成績報表</a></li>
+                                    <li><a asp-page="/Student/GraduationThreshold">畢業門檻查調</a></li>
+                                    <li><a asp-page="/Student/GraduationAuditReport">畢業預審報表</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 mt-3 d-md-none"></div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="card">
+                            <h5 class="card-header bg-secondary text-white">繳費單據</h5>
+                            <div class="card-body">
+                                <ul>
+                                    <li><a asp-page="/Student/Payments">繳費單</a></li>
+                                    <li><a asp-page="/Student/Receipts">繳費單收據</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-3 d-sm-none"></div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="card">
+                            <h5 class="card-header bg-secondary text-white">教學評量</h5>
+                            <div class="card-body">
+                                <ul>
+                                    <li><a asp-page="/Student/AutoEvaluate">教學評量自動填寫</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-3"></div>
+                    <div class="col-12 col-sm-12">
+                        <div class="card">
+                            <h5 class="card-header bg-secondary text-white">學生評量</h5>
+                            <div class="card-body">
+                                <ul>
+                                    <li><a asp-page="/Courses/Index">評價排行</a></li>
+                                    <li><a asp-page="/Courses/Overview">課程綱要（搜尋課程）</a></li>
+                                    <li><a asp-page="/Courses/ListAll">所有評論（搜尋課程）</a></li>
+                                    <li><a asp-page="/Courses/Mine">我的評論</a></li>
+                                    <li><a asp-page="/Courses/Create/Select">新增評論</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

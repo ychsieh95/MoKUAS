@@ -1,0 +1,54 @@
+﻿@page
+@model MoKUAS.Pages.LoginModel
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Login - MoKUAS</title>
+    <!-- Favicon Package -->
+    <!-- CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/lib/login-user-page/css/login.css" type="text/css" />
+    <!-- Scripts -->
+    <script src="~/lib/jquery/jquery.min.js" type="text/javascript"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+</head>
+<body>
+    <!--
+
+        login form sample
+        1. login-form:
+            https://bootsnipp.com/snippets/bxzmb
+        2. login-user-page:
+            https://bootsnipp.com/snippets/dldxB
+        3. Simple Login / Signup form with validation:
+            https://bootsnipp.com/snippets/z8l2X
+
+    -->
+    <div class="wrapper fadeInDown" style="background-color: #56baed;">
+        <div class="formContent">
+            <!-- Tabs Titles -->
+            <!-- Icon -->
+            <div class="fadeIn first">
+                <img src="~/lib/login-user-page/images/user-icon.svg" id="icon" alt="User Icon" />
+            </div>
+            <!-- Error Message -->
+            <div asp-validation-summary="All" class="fadeIn second"></div>
+            <!-- Login Form -->
+            <form asp-action="/Login" method="post">
+                <input asp-for="Username" type="text" class="fadeIn second" placeholder="STUDENT ID" />
+                <input asp-for="Password" type="password" class="fadeIn third" placeholder="PASSWORD" />
+                <input asp-for="ReturnUrl" type="hidden" />
+                <input type="submit" class="fadeIn fourth" value="Log In">
+            </form>
+            <!-- Remind Passowrd -->
+            <div class="formFooter">
+                <a class="underlineHover" href="#">Forgot Password?</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

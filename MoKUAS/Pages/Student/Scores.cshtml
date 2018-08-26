@@ -1,0 +1,113 @@
+﻿@page "{SysValue?}"
+@model ScoresModel
+@{
+    Layout = "_LayoutStudents";
+    ViewData["Title"] = "學期成績";
+}
+
+@section styles {
+    <style type="text/css">
+        @@media screen and (max-width: 576px) {
+            .hidden-sm {
+                display: none;
+            }
+        }
+    </style>
+}
+
+@section scripts {
+    <script type="text/javascript">
+        $('#SysValue').change(function () {
+            $(this).prop('disabled', true);
+            window.location = '/Student/Scores/' + $(this).val();
+            //$('#search-form').submit();
+        });
+    </script>
+}
+
+<div class="container">
+    <div asp-validation-summary="All" class="my-3"></div>
+    <form asp-action="/Student/Scores" method="get" class="my-3" id="search-form">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label text-sm-right">選擇查詢成績學期：</label>
+            <div class="col-sm-10">
+                <select asp-for="SysValue" asp-items="@Model.DropDownList" class="form-control" required></select>
+            </div>
+        </div>
+    </form>
+
+    <hr />
+
+    <div class="card">
+        <h3 class="card-header" style="background-color: #bee5eb;">學期成績明細</h3>
+        <div class="card-body p-0">
+            <div class="d-none d-sm-block">
+                <table class="table">
+                    <thead class="w-100">
+                        <tr class="row mx-0 text-center">
+                            <th class="col-4 align-middle">操行成績</th>
+                            <th class="col-4 align-middle">總平均</th>
+                            <th class="col-4 align-middle">班級排名</th>
+                        </tr>
+                    </thead>
+                    <tbody class="w-100">
+                        <tr class="row mx-0 text-center">
+                            <td class="col-4 align-middle">@Model.ScoreList.PersonalConduct</td>
+                            <td class="col-4 align-middle">@Model.ScoreList.AverageScore</td>
+                            <td class="col-4 align-middle">@Model.ScoreList.ClassRank / @Model.ScoreList.ClassSize（@Model.ScoreList.ClassRankPercent%）</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-sm-none">
+                <table class="table">
+                    <tbody class="w-100">
+                        <tr class="row mx-0 text-center">
+                            <th class="col-4 align-middle">操行成績</th>
+                            <th class="col-8 align-middle">@Model.ScoreList.PersonalConduct</th>
+                        </tr>
+                        <tr class="row mx-0 text-center">
+                            <td class="col-4 align-middle">總平均</td>
+                            <td class="col-8 align-middle">@Model.ScoreList.AverageScore</td>
+                        </tr>
+                        <tr class="row mx-0 text-center">
+                            <td class="col-4 align-middle">班級排名</td>
+                            <td class="col-8 align-middle">@Model.ScoreList.ClassRank / @Model.ScoreList.ClassSize（@Model.ScoreList.ClassRankPercent%）</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <table class="table table-striped">
+                <thead class="w-100">
+                    <tr class="table-success text-center">
+                        <th class="align-middle">#</th>
+                        <th class="align-middle" style="text-align: left;">科目名稱</th>
+                        <th class="align-middle">學分數</th>
+                        <th class="align-middle hidden-sm">授課時數</th>
+                        <th class="align-middle hidden-sm">必選修</th>
+                        <th class="align-middle hidden-sm">開課別</th>
+                        <th class="align-middle">期中成績</th>
+                        <th class="align-middle">學期成績</th>
+                        <th class="align-middle hidden-sm">備註</th>
+                    </tr>
+                </thead>
+                <tbody class="w-100">
+                    @foreach (var score in Model.ScoreList.Scores)
+                    {
+                        <tr class="text-center">
+                            <td class="align-middle">@score.Index</td>
+                            <td class="align-middle" style="text-align: left;">@score.SubjectChineseName</td>
+                            <td class="align-middle">@score.PropertiesCredit</td>
+                            <td class="align-middle hidden-sm">@score.TeachTime</td>
+                            <td class="align-middle hidden-sm">@score.PropertiesRequiredOrElective</td>
+                            <td class="align-middle hidden-sm">@score.ClassType</td>
+                            <td class="align-middle">@score.MidtermScore</td>
+                            <td class="align-middle">@score.SemesterScore</td>
+                            <td class="align-middle hidden-sm">@score.Remark</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

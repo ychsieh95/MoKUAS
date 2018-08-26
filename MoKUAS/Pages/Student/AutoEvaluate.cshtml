@@ -1,0 +1,153 @@
+﻿@page
+@model AutoEvaluateModel
+@{
+    Layout = "_LayoutStudents";
+    ViewBag.Title = "教學評量自動填寫";
+}
+
+@section scripts {
+    <!-- string.format function -->
+    <script src="~/Scripts/String.js" type="text/javascript"></script>
+    <!-- form submit confrim -->
+    <script type="text/javascript">
+        $("#aq-params-form").submit(function (e) {
+            var typeTxt = $('select#type-selector option:selected').text();
+            var genderTxt = $('select#sex-selector option:selected').text();
+            var collegeTxt = $('select#college-selector option:selected').text();
+            var esTxt = $('select#es-selector option:selected').text();
+            var gradeTxt = $('select#grade-selector option:selected').text();
+            var evaliationTxt = $('select#evaluation-selector option:selected').text();
+            var favoriteRank = $('select#favorite-rank-selector option:selected').text();
+            var quTxt = String.format("---填寫評量設定---\n{0}：{1}\n{2}：{3}\n{4}：{5}\n---學生資料設定---\n{6}：{7}\n{8}：{9}\n{10}：{11}\n{12}：{13}",
+                "類別", typeTxt,
+                "評量", evaliationTxt,
+                "評價", favoriteRank,
+                "性別", genderTxt,
+                "學院", collegeTxt,
+                "學制", esTxt,
+                "年級", gradeTxt);
+            return confirm(String.format("{0}\n\n確定開始自動填寫教學評量？", quTxt));
+        });
+    </script>
+}
+
+<div class="container">
+    <div asp-validation-summary="All" class="my-3"></div>
+    <div class="text-center my-3">
+        <h2>教學評量自動填寫</h2>
+        <p>──「給我一些參數，我可以寫完整份評量」──</p>
+    </div>
+    <div class="text-center" style="color: red;">
+        <p>如果有你喜歡、討厭的老師或課程，記得先上<a href="http://selcourse.kuas.edu.tw/">選課系統</a>寫完它的教學評量再使用機器人唷</p>
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col-sm-6">
+            <form asp-action="/Student/AutoEvaluate" method="get" id="aq-params-form">
+                <div class="card border-primary">
+                    <h5 class="card-header bg-primary text-white">填寫評量設定</h5>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label text-sm-right">類別：</label>
+                            <div class="col-sm-10">
+                                <select asp-for="Evaluation.EvaliationType" asp-items="@Model.EvaliationTypes" class="form-control" required></select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label text-sm-right">評量：</label>
+                            <div class="col-sm-10">
+                                <select asp-for="Evaluation.Subject" asp-items="@Model.EvaliationSubjects" class="form-control" required></select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label text-sm-right">評價：</label>
+                            <div class="col-sm-10">
+                                <select asp-for="Evaluation.FavoriteRank" asp-items="@Model.FavoriteRanks" class="form-control" required></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card border-info mt-3">
+                    <h5 class="card-header bg-info text-white">學生資料設定</h5>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label text-sm-right">性別：</label>
+                            <div class="col-sm-10">
+                                <select asp-for="Evaluation.Gender" asp-items="@Model.Genders" class="form-control" required></select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label text-sm-right">學院：</label>
+                            <div class="col-sm-10">
+                                <select asp-for="Evaluation.College" asp-items="@Model.Colleges" class="form-control" required></select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label text-sm-right">學制：</label>
+                            <div class="col-sm-10">
+                                <select asp-for="Evaluation.EductionalSystem" asp-items="@Model.EductionalSystems" class="form-control" required></select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label text-sm-right">年級：</label>
+                            <div class="col-sm-10">
+                                <select asp-for="Evaluation.Grade" asp-items="@Model.Grades" class="form-control" required></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3 text-right">
+                    @if (Model.EvaluationItems.Count <= 0)
+                    {
+                        <button class="btn btn-danger" type="button" data-toggle="modal" data-target="#modal-evaluation-state">無法取得評量狀態</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-success" type="button" data-toggle="modal" data-target="#modal-evaluation-state">
+                            目前評量狀態
+                            <span class="badge">@Model.EvaluationItems.Count(evaluationItem => evaluationItem.Done) / @Model.EvaluationItems.Count</span>
+                        </button>
+                        <input type="submit" class="btn btn-primary" value="送出" />
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-evaluation-state">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-secondary text-white">
+                    <h5 class="modal-title">目前評量狀態</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <td>評量類別</td>
+                                <td>課程中文名稱</td>
+                                <td>授課教師</td>
+                                <td>評量狀態</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var evaluationItem in Model.EvaluationItems)
+                            {
+                                <tr>
+                                    <td>@evaluationItem.EvaliationType.ToString()</td>
+                                    <td>@evaluationItem.SubjectChineseName</td>
+                                    <td>@evaluationItem.Teachers</td>
+                                    <td><img src="~/Content/Images/@(evaluationItem.Done ? "success" : "failure").png" style="max-width: 32px; max-height: 32px;" /></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,73 @@
+﻿@page
+@model MidtermAlertsModel
+@{
+    Layout = "_LayoutStudents";
+    ViewData["Title"] = "期中預警";
+}
+
+<div class="container">
+    <div asp-validation-summary="All" class="my-3"></div>
+    <div class="d-none d-sm-block">
+        <table class="table table-striped">
+            <thead class="w-100">
+                <tr class="table-danger text-center">
+                    <th class="align-middle">項次</th>
+                    <th class="align-middle">班級</th>
+                    <th class="align-middle">科目</th>
+                    <th class="align-middle">分組</th>
+                    <th class="align-middle">授課教師</th>
+                    <th class="align-middle">預警原因</th>
+                    <th class="align-middle">備註</th>
+                </tr>
+            </thead>
+            <tbody class="w-100">
+                @foreach (var midtermAlert in Model.MidtermAlerts)
+                {
+                    <tr class="text-center">
+                        <td class="align-middle">@midtermAlert.Index</td>
+                        <td class="align-middle">@midtermAlert.ClassName</td>
+                        <td class="align-middle">@midtermAlert.SubjectChineseName</td>
+                        <td class="align-middle">@midtermAlert.Group</td>
+                        <td class="align-middle">@midtermAlert.Teachers</td>
+                        <td class="align-middle">@midtermAlert.AlertReason</td>
+                        <td class="align-middle">@midtermAlert.Remark</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="d-sm-none">
+        @foreach (var midtermAlert in Model.MidtermAlerts)
+        {
+            <div class="card my-3">
+                <h5 class="card-header">#@midtermAlert.Index - @midtermAlert.SubjectChineseName</h5>
+                <div class="card-body p-0">
+                    <table class="table table-striped">
+                        <tbody class="w-100">
+                            <tr class="table-danger text-center">
+                                <td class="align-middle" style="text-align: right;">班級</td>
+                                <td class="align-middle">@midtermAlert.ClassName</td>
+                            </tr>
+                            <tr class="table-danger text-center">
+                                <td class="align-middle" style="text-align: right;">分組</td>
+                                <td class="align-middle">@midtermAlert.Group</td>
+                            </tr>
+                            <tr class="table-danger text-center">
+                                <td class="align-middle" style="text-align: right;">授課教師</td>
+                                <td class="align-middle">@midtermAlert.Teachers</td>
+                            </tr>
+                            <tr class="table-danger text-center">
+                                <td class="align-middle" style="text-align: right;">預警原因</td>
+                                <td class="align-middle">@midtermAlert.AlertReason</td>
+                            </tr>
+                            <tr class="table-danger text-center">
+                                <td class="align-middle" style="text-align: right;">備註</td>
+                                <td class="align-middle">@midtermAlert.Remark</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</div>

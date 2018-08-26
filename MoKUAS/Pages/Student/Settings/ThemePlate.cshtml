@@ -1,0 +1,16 @@
+﻿@page "{Theme?}"
+@model ThemePlateModel
+@{
+    Layout = "_LayoutStudents";
+    ViewData["Title"] = "面板樣式";
+}
+
+<div class="container">
+    <div asp-validation-summary="All" class="my-3"></div>
+    <ul>
+        @foreach (var theme in Model.Themes)
+        {
+            <li><a asp-page="/Student/Settings/ThemePlate" asp-route-Theme="@theme">@theme</a></li>
+        }
+    </ul>
+</div>
